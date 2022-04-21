@@ -1,12 +1,11 @@
-name: dotent-restore-push
+name: github-package-consume
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
-  jobs:
+jobs:
   build:
     name: Build & Publish
     runs-on: windows-latest
