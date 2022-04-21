@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  # Add Run workflow option in pipeline
   workflow_dispatch:
 
 jobs:
@@ -23,7 +24,7 @@ jobs:
         env:
           sha: ${{ github.sha }}
       - name: Create the nuget package
-        run: dotnet pack .\JustLargePackage\JustLargePackage.csproj -p:PackageVersion=1.0.0-${{ github.sha }} --configuration Release --no-build
+        run: dotnet pack .\JustLargePackage\JustLargePackage.csproj -p:PackageVersion=1.0.0-${{ github.sha }} --configuration Release --no-build -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
         env:
           sha: ${{ github.sha }}
       # Password encryption is not supported in MAC, Linux.
