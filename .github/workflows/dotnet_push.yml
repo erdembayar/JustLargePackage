@@ -1,0 +1,44 @@
+name: dotent-restore-push
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Publish
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0' # SDK Version to use.
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Build Nuget packages
+        run: dotnet build .\JustLargePackage\JustLargePackage.csproj -p:PackageVersion=1.0.0-${{ github.sha }}  --configuration Release
+        env:
+          sha: ${{ github.sha }}
+      - name: Create the nuget package
+        run: dotnet pack .\JustLargePackage\JustLargePackage.csproj -p:PackageVersion=1.0.0-${{ github.sha }} --configuration Release --no-build
+        env:
+          sha: ${{ github.sha }}
+      # Password encryption is not supported in MAC, Linux.
+      - name: Add private GitHub registry to NuGet
+        run: dotnet nuget add source https://nuget.pkg.github.com/erdembayar/index.json -n GPR # -u erdembayar -p ${{ secrets.PUSH_TOKEN }} --store-password-in-clear-text
+
+      - name: Push generated package to GitHub registry
+        run: |
+          for f in JustLargePackage/bin/Release/*.nupkg
+          do
+            dotnet nuget push $f --source "GPR" --skip-duplicate --api-key ${{ secrets.PUSH_TOKEN }} #--skip-duplicate
+          done
+
+          for f in JustLargePackage/bin/Release/*.snupkg
+          do
+            dotnet nuget push $f --source "GPR" --skip-duplicate --api-key ${{ secrets.PUSH_TOKEN }} #--skip-duplicate
+          done
+        shell: bash

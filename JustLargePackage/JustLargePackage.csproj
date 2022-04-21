@@ -10,6 +10,10 @@
 
   <ItemGroup>
     <Content Include="data0.csv" />
+	<Content Include="data1.csv" />
+	<Content Include="data2.csv" />	  
+	<Content Include="data3.csv" />	  
+	<Content Include="data4.csv" />	  
   </ItemGroup>
 
 </Project>
