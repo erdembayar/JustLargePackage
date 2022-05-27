@@ -1,4 +1,4 @@
-name: dotent-restore-push
+name: dotnet-restore-push
 
 on:
   push:

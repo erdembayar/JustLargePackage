@@ -1,0 +1,18 @@
+name: NuGet Version
+
+on:
+  push:
+    branches:
+      - main
+  # Add Run workflow option in pipeline
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: NuGet Version
+    runs-on: windows-2019 # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml
+    steps:
+      - name: Print NuGet version
+        run: |
+          nuget ?
+        shell: bash
